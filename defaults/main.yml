@@ -1,0 +1,4 @@
+---
+# defaults file for node_exporter
+NODE_EXPORTER_VERSION: 0.14.0
+NODE_EXPORTER_BIND_PORT: 9100

@@ -1,0 +1,2 @@
+---
+  NODE_EXPORTER_CONF_DEST: /etc/init/node_exporter.conf

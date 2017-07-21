@@ -1,0 +1,34 @@
+---
+# tasks file for node_exporter
+- name: Include OS-specific variables
+  include_vars: "{{ ansible_distribution }}.{{ ansible_distribution_version }}.yml"
+- name: Create dir for downloaded files and node_exporter
+  file:
+    name: "/opt/{{ item }}"
+    state: directory
+  with_items:
+    - archives
+    - node_exporter
+- name: Download node_exporter tar file
+  get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{NODE_EXPORTER_VERSION}}/node_exporter-{{NODE_EXPORTER_VERSION}}.linux-amd64.tar.gz"
+    dest: /opt/archives
+- name: untar node_exporter file
+  unarchive:
+    dest: /opt/node_exporter
+    remote_src: True
+    src: "/opt/archives/node_exporter-{{NODE_EXPORTER_VERSION}}.linux-amd64.tar.gz"
+  notify: restart node_exporter
+- name: create node_exporter upstart init files
+  template:
+    src: "node_exporter.{{ ansible_distribution }}.{{ ansible_distribution_version }}.conf.j2"
+    dest: "{{ NODE_EXPORTER_CONF_DEST }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart node_exporter
+- name: start node_exporter
+  service:
+    name: node_exporter
+    state: started
+    enabled: True
