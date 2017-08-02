@@ -1,2 +1,3 @@
 ---
+  NODE_EXPORTER_CONF_SRC: Ubutnu.systemd.conf.j2
   NODE_EXPORTER_CONF_DEST: /lib/systemd/system/node_exporter.service

@@ -1,2 +1,3 @@
 ---
+  NODE_EXPORTER_CONF_SRC: Ubutnu.upstart.conf.j2
   NODE_EXPORTER_CONF_DEST: /etc/init/node_exporter.conf
