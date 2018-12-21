@@ -1,38 +1,14 @@
 ---
 # tasks file for node_exporter
-- name: Include variables for Ubuntu 14.04 and before
-  include_vars: "{{ ansible_distribution }}.upstart.yml"
-  when: ansible_distribution == "Ubuntu" and ansible_distribution_version|float <= 14.04
-- name: Include variables for Ubuntu 14.10 and after
-  include_vars: "{{ ansible_distribution }}.upstart.yml"
-  when: ansible_distribution == "Ubuntu" and ansible_distribution_version|float > 14.04
-- name: Create dir for downloaded files and node_exporter
-  file:
-    name: "/opt/{{ item }}"
-    state: directory
-  with_items:
-    - archives
-    - node_exporter
-- name: Download node_exporter tar file
-  get_url:
-    url: "https://github.com/prometheus/node_exporter/releases/download/v{{NODE_EXPORTER_VERSION}}/node_exporter-{{NODE_EXPORTER_VERSION}}.linux-amd64.tar.gz"
-    dest: /opt/archives
-- name: untar node_exporter file
-  unarchive:
-    dest: /opt/node_exporter
-    remote_src: True
-    src: "/opt/archives/node_exporter-{{NODE_EXPORTER_VERSION}}.linux-amd64.tar.gz"
-  notify: restart node_exporter
-- name: create node_exporter service files
-  template:
-    src: "{{ NODE_EXPORTER_CONF_SRC }}"
-    dest: "{{ NODE_EXPORTER_CONF_DEST }}"
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart node_exporter
-- name: start node_exporter
-  service:
-    name: node_exporter
-    state: started
-    enabled: True
+  - name: Create archives and node_exporter directories
+    file:
+      name: "{{ item }}"
+      state: directory
+    with_items:
+      - "{{ archives_dir }}"
+      - "{{ node_exporter_dir }}"
+  - name: Download node_exporter archive
+    get_url:
+      url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+      dest: "{{ archives_dir }}"
+  - include_tasks: "{{ ansible_facts.service_mgr }}.yml"

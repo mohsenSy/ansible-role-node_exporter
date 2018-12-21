@@ -1,0 +1,16 @@
+- name: unarchive node_exporter
+  unarchive:
+    src: "{{ archives_dir }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: "{{ node_exporter_dir }}"
+    remote_src: true
+  notify: restart node_exporter upstart
+- name: Create node_exporter upstart file
+  template:
+    src: node_exporter.upstart.j2
+    dest: /etc/init/node_exporter.conf
+    mode: 0644
+- name: Start node_exporter
+  service:
+    name: node_exporter
+    state: started
+    enabled: true

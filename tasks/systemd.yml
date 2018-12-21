@@ -1,0 +1,16 @@
+- name: unarchive node_exporter
+  unarchive:
+    src: "{{ archives_dir }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: "{{ node_exporter_dir }}"
+    remote_src: true
+  notify: restart node_exporter systemd
+- name: Create node_exporter systemd file
+  template:
+    src: node_exporter.systemd.j2
+    dest: /etc/systemd/system/node_exporter.service
+  notify: systemd reload
+- name: Start node_exporter
+  systemd:
+    name: node_exporter.service
+    state: started
+    enabled: true

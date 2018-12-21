@@ -1,4 +1,7 @@
 ---
 # defaults file for node_exporter
-NODE_EXPORTER_VERSION: 0.14.0
-NODE_EXPORTER_BIND_PORT: 9100
+archives_dir: /opt/archives
+node_exporter_dir: /opt/node_exporter
+node_exporter_bind_addr: 0.0.0.0
+node_exporter_bind_port: 9100
+node_exporter_version: 0.14.0
